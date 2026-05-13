@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MANOHAR CAR TRAVELS - Trip Sheet / Cash Bill</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background: #fff; }
+    .bill-container {
+      width: 670px;
+      margin: 30px auto;
+      border: 2px solid #333;
+      padding: 18px 24px;
+      box-shadow: 0 0 10px #ccc;
+      background: #fff;
+      position: relative;
+    }
+      .header { text-align: left; }
+    .logo-title-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      justify-content: flex-start; 
+    }
+    .company-name {
+      color: #c00;
+      font-size: 2em;
+      font-weight: bold;
+      letter-spacing: 1px;
+      margin-left: 40px;
+    }
+    .header { text-align: left; }
+    .company-name {
+      color: #c00; font-size: 2em; font-weight: bold; letter-spacing: 1px;
+    }
+    .details { text-align: center; font-size: 1em;}
+    .proprietor { color: #c00; font-weight: bold; font-size: 1.1em;}
+    .section-title {
+      color: #c00; font-weight: bold; font-size: 1.2em;
+      text-align: center; margin: 18px 0 6px 0;
+    }
+    .trip-details, .bill-details {
+      width: 100%; border-collapse: collapse; margin-bottom: 8px;
+    }
+    .trip-details td, .bill-details td {
+      padding: 5px; font-size: 1em; border: none; vertical-align: top;
+    }
+    .bill-details td.label { width: 33%; color: #333; font-weight: bold;}
+    .total-row .label, .total-row .value { font-weight: bold; color: #c00;}
+    .signature-section {
+      margin-top: 20px; display: flex; justify-content: space-between; font-size: 1em;
+    }
+    .signature-section span {
+      border-top: 1px dotted #000; padding-top: 3px; min-width: 140px; display: inline-block;
+    }
+    .footer-note { color: #c00; font-size: 0.95em; margin-top: 12px; border-top: 1px solid #ccc; padding-top: 8px;}
+    .footer-note .important { font-weight: bold; color: #c00;}
+    .inwords { font-style: italic; }
+    input, textarea {
+      border: none; border-bottom: 1px dotted #000; background: transparent;
+      font-size: inherit; font-family: inherit; min-width: 60px;
+    }
+    input[type="number"] { width: 60px;}
+    input[type="date"] { min-width: 110px;}
+    .bill-container input, .bill-container textarea { outline: none;}
+    textarea { resize: none; vertical-align: bottom;}
+    .pdf-btn {margin: 18px auto 0 auto; display: block; padding: 8px 25px; background:#c00; color:#fff; border:none; border-radius:4px; font-size:1em;}
+    @media print {
+      .pdf-btn { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <button class="pdf-btn" onclick="generatePDF()">Download as PDF</button>
+  <div class="bill-container" id="bill">
+    <div class="header">
+        <div class="logo-title-row">
+      <img src="logo.svg" alt="Logo" width="95" height="75">
+      <div class="company-name">MANOHAR CAR TRAVELS</div>
+    </div>
+    <div class="details">
+      Registration Number : AP-08-84-10-0587384<br>
+      Ashok Nagar, Vijayawada - 520 007, NTR District.<br>
+      <span class="proprietor">Proprietor: K. Ravi Kumar</span><br>
+      <span>Cell: 911 468 9999</span> (GPAY/PHONEPAY)
+      </div>
+    </div>
+    <div class="section-title">TRIP SHEET / CASH BILL</div>
+    <table class="trip-details">
+      <tr>
+        <td>No. <input type="text" style="width:48px"></td>
+        <td align="right">Date <input type="date"></td>
+      </tr>
+      <tr>
+        <td colspan="2">Name of the Guest: <input type="text" style="width:420px;"></td>
+      </tr>
+      <tr>
+        <td>Guest From: <input type="text" style="width:140px;"></td>
+        <td>Cell No.: <input type="text" style="width:170px;"></td>
+      </tr>
+      <tr>
+        <td>Schedule: <input type="text" style="width:320px;"></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Starting Time: <input type="text" style="width:65px"></td>
+        <td>Ending Time: <input type="text" style="width:120px"></td>
+      </tr>
+      <tr>
+        <td>No. of Days: <input type="text" style="width:28px;"></td>
+        <td></td>
+      </tr>
+    </table>
+    <table class="bill-details">
+      <tr>
+        <td class="label">Type of Ride:</td>
+        <td><input type="text" style="width:208px;"></td>
+      </tr>
+      <tr>
+        <td class="label">Total KMs:</td>
+        <td><input type="number" style="width:138px;"></td>
+      </tr>
+      <tr>
+        <td class="label">Ending KMs:</td>
+        <td><input type="number" style="width:70px;"></td>
+      </tr>
+      <tr>
+        <td class="label">Starting KMs:</td>
+        <td>
+          <input type="number" style="width:50px;">
+              Toll Amount: <input type="number" style="width:62px;">
+        </td>
+      </tr>
+      <tr>
+        <td class="label">Extra KMs:</td>
+        <td>
+          <input type="number" style="width:40px;">
+          Extra Hrs: <input type="number" style="width:48px;">
+          Cost: <input type="number" style="width:38px;">
+        </td>
+      </tr>
+      <tr>
+        <td class="label">Vehicle No.:</td>
+        <td>
+          <input type="text" style="width:58px;">
+          Type: <input type="text" style="width:62px;">
+        </td>
+      </tr>
+      <tr class="total-row">
+        <td class="label">TOTAL:</td>
+        <td class="value"><input type="number" style="width:110px; font-weight:bold; color:#c00;"></td>
+      </tr>
+      <tr>
+        <td class="label inwords">In Words:</td>
+        <td><textarea rows="1" style="width:208px;"></textarea></td>
+      </tr>
+    </table>
+    <div style="text-align:right; font-size:1.08em; margin:7px 0;">
+      FOR <span class="company-name" style="font-size:1em; display:inline; color:#c00;">MANOHAR CAR TRAVELS</span>
+    </div>
+    <div class="signature-section">
+      <span>Guest Signature</span>
+      <span>Incharge / Manager</span>
+    </div>
+    <div class="footer-note">
+      <div>Note: <span class="important">Toll Gate Charges, Other State Permit Charges, Parking Charges should be paid the party.</span></div>
+      <div>Dear Guest please check your belongings before you leave the cab.</div>
+    </div>
+  </div>
+  <script>
+    async function generatePDF() {
+      const bill = document.getElementById('bill');
+      // hide the button during render
+      document.querySelector('.pdf-btn').style.visibility = 'hidden';
+      await html2canvas(bill, {scale:2}).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new window.jspdf.jsPDF({orientation:'portrait', unit:'pt', format: [canvas.width, canvas.height]});
+        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+        pdf.save('ManoharCarTravels-Bill.pdf');
+      });
+      document.querySelector('.pdf-btn').style.visibility = 'visible';
+    }
+  </script>
+</body>
+</html>
